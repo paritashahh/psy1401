@@ -5,3 +5,9 @@
 #layer that classifies input vectors
 #output that has to be compared to the training data set w/ a loss function 
 
+from turtle import pd
+
+
+import pandas as pd
+
+from sklearn.model_selection
