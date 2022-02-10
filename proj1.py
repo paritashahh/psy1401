@@ -94,10 +94,10 @@ simple_units = np.asarray(matrix).flatten()
 
 #initial weights for each simple cell-unit pair sampled from uniform distribution
 ##weights = #simple units
-w1j = np.random.uniform(0, 0.1, (len(r0)*len(matrix)))
-w2j = np.random.uniform(0, 0.1, (len(r0)*len(matrix)))
-w3j = np.random.uniform(0, 0.1, (len(r0)*len(matrix)))
-w4j = np.random.uniform(0, 0.1, (len(r0)*len(matrix)))
+w1j = np.ndarray.tolist(np.random.uniform(0, 0.1, (len(r0)*len(matrix))))
+w2j = np.ndarray.tolist(np.random.uniform(0, 0.1, (len(r0)*len(matrix))))
+w3j = np.ndarray.tolist(np.random.uniform(0, 0.1, (len(r0)*len(matrix))))
+w4j = np.ndarray.tolist(np.random.uniform(0, 0.1, (len(r0)*len(matrix))))
 
 #initialize list to keep track of weight_change
 delta_w1j = []
@@ -107,7 +107,7 @@ delta_w4j = []
 
 def complex_unit(wij): 
     for i in range(len(simple_units)):
-        return (simple_units[i] * wij(i))
+        return (simple_units[i] * wij[i])
 
 #compute which complex unit will be activated
 c1 = sum(complex_unit(w1j))
@@ -151,12 +151,14 @@ def model(complex_unit, index, alpha):
         complex_unit.append(delta_wij + wij)
 
 def training():
-    unit_activation()
-    y_bar(0.2)
-    model(w1j, 0, 0.02)
-    model(w1j, 1, 0.02)
-    model(w1j, 2, 0.02)
-    model(w1j, 3, 0.02)
+    for i in range (500):
+        unit_activation()
+        y_bar(0.2)
+        model(w1j, 0, 0.02)
+        model(w2j, 1, 0.02)
+        model(w3j, 2, 0.02)
+        model(w4j, 3, 0.02)
+        i -= 1
     
 # %%
 
