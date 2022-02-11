@@ -199,9 +199,9 @@ max_sum = max(sum_list)
 max_index = sum_list.index(max_sum)
 
 #y is for every unit not every simple cell
-yt_prev = []
-yt = []
-y_avg = []
+yt_prev = [1, 1, 1, 1]
+yt = [1, 1, 1, 1]
+y_avg = [1, 1, 1, 1]
 
 #activate one of the complex units
 def unit_activation():
@@ -212,7 +212,7 @@ def unit_activation():
             yt[i] = 0
 
 #compute y(t) 
-def y_bar(delta):
+def y_bar(delta, yt_prev, y_avg, yt):
     for i in range (4):
         if yt_prev == []:
             y_avg[i] = delta * yt[i]
@@ -232,7 +232,7 @@ def training():
     #500 is just trials 
     for i in range (50):
         unit_activation()
-        y_bar(0.2)
+        y_bar(0.2, yt_prev, y_avg, yt)
         model(w1j, 0, 0.02)
         model(w2j, 1, 0.02)
         model(w3j, 2, 0.02)
@@ -249,18 +249,6 @@ synap_weights1 = []
 synap_weights2 = []
 synap_weights3 = []
 synap_weights4 = []
-
-import numpy as np
-from matplotlib import pyplot as plt
-plt.rcParams["figure.figsize"] = [7.50, 3.50]
-plt.rcParams["figure.autolayout"] = True
-data2D1 = synap_weights1 
-data2D2 = synap_weights2
-data2D3 = synap_weights3
-data2D4 = synap_weights4 
-im = plt.imshow(data2D, cmap="copper_r")
-plt.colorbar(im)
-plt.show()
 
 import matplotlib.pyplot as plt
 
