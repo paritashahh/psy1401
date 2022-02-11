@@ -167,17 +167,12 @@ while i < 2:
     scale_change2.append(matrix8)
     i += 1
 #______________________________________________________
-
-#collapse matrix into array 
-#(now we can refer to each element aka simple unit individually)
-simple_units = np.asarray(matrix).flatten()
- 
 #initial weights for each simple cell-unit pair sampled from uniform distribution
 ##weights = #simple units
-w1j = np.random.uniform(0, 0.1, len(simple_units)).tolist()
-w2j = np.random.uniform(0, 0.1, len(simple_units)).tolist()
-w3j = np.random.uniform(0, 0.1, len(simple_units)).tolist()
-w4j = np.random.uniform(0, 0.1, len(simple_units)).tolist()
+w1j = np.random.uniform(0, 0.1, 64).tolist()
+w2j = np.random.uniform(0, 0.1, 64).tolist()
+w3j = np.random.uniform(0, 0.1, 64).tolist()
+w4j = np.random.uniform(0, 0.1, 64).tolist()
 
 #define units 
 unit = []
@@ -185,155 +180,100 @@ for i in range(64):
     unit.append(i)
 
 #prints x axis as 1-64, y-axis as weights 
-for i in range(len(simple_units)):
+for i in range(len(unit)):
     plt.rc('grid', linestyle="-", color='black')
-    plt.scatter(unit, w1j, color=['red'])
-    plt.title("Simple Units vs. Weights(Complex Unit 1) at time 0")
+    plt.scatter(unit, w1j, color=['red'], label='Class 1')
+    plt.scatter(unit, w2j, color=['blue'], label='Class 2')
+    plt.scatter(unit, w3j, color=['green'], label='Class 3')
+    plt.scatter(unit, w4j, color=['orange'], label='Class 4')
+    plt.legend()
+    plt.title("Simple Units vs. Weights at time 0")
     plt.xlabel("Simple-Units")
     plt.ylabel("Weights") 
     plt.grid(True)
 plt.show()
 
 
-#prints x axis as 1-64, y-axis as weights 
-for i in range(len(simple_units)):
-    plt.rc('grid', linestyle="-", color='black')
-    plt.scatter(unit, w2j, color=['red'])
-    plt.title("Simple Units vs. Weights(Complex Unit 2) at time 0")
-    plt.xlabel("Simple-Units")
-    plt.ylabel("Weights") 
-    plt.grid(True)
-plt.show()
+for i in range(100):
+    for i in range(len(TopRBottomL)):
+        #collapse matrix into array 
+        #(now we can refer to each element aka simple unit individually)
+        simple_units = (TopRBottomL[i]).flatten()
 
+        unit_sum = []
+        for i in range(len(simple_units)):
+            unit_sum.append(0.2)
 
-#prints x axis as 1-64, y-axis as weights 
-for i in range(len(simple_units)):
-    plt.rc('grid', linestyle="-", color='black')
-    plt.scatter(unit, w3j, color=['red'])
-    plt.title("Simple Units vs. Weights(Complex Unit 3) at time 0")
-    plt.xlabel("Simple-Units")
-    plt.ylabel("Weights") 
-    plt.grid(True)
-plt.show()
+        def complex_unit(wij): 
+            for i in range(len(simple_units)):
+                unit_sum[i] = (simple_units[i] * wij[i])
+            return unit_sum
 
+        #compute which complex unit will be activated
+        c1 = sum(complex_unit(w1j))
+        c2 = sum(complex_unit(w2j))
+        c3 = sum(complex_unit(w3j))
+        c4 = sum(complex_unit(w4j))
 
-#prints x axis as 1-64, y-axis as weights 
-for i in range(len(simple_units)):
-    plt.rc('grid', linestyle="-", color='black')
-    plt.scatter(unit, w4j, color=['red'])
-    plt.title("Simple Units vs. Weights(Complex Unit 4) at time 0")
-    plt.xlabel("Simple-Units")
-    plt.ylabel("Weights") 
-    plt.grid(True)
-plt.show()
+        #get index of max element (corresponds to which unit is activated)
+        sum_list = [c1, c2, c3, c4]
+        max_sum = max(sum_list)
+        max_index = sum_list.index(max_sum)
 
+        #y is for every unit not every simple cell
+        yt_prev = [1,1,1,1]
+        yt = [1,1,1,1]
+        y_avg = [1,1,1,1]
 
-unit_sum = []
-for i in range(len(simple_units)):
-    unit_sum.append(0.2)
+        #activate one of the complex units
+        def unit_activation():
+            for i in range (4):
+                if i == max_index:
+                    yt[i] = 1
+                else:
+                    yt[i] = 0
 
-def complex_unit(wij): 
-    for i in range(len(simple_units)):
-        unit_sum[i] = (simple_units[i] * wij[i])
-    return unit_sum
+        #compute y(t) 
+        def y_bar(delta, yt_prev, y_avg, yt):
+            for i in range (4):
+                if yt_prev == []:
+                    y_avg[i] = delta * yt[i]
+                else:
+                    y_avg[i] = (1 - delta)*(yt_prev[i]) + (delta)*(yt[i])
+            yt_prev = y_avg
 
-#compute which complex unit will be activated
-c1 = sum(complex_unit(w1j))
-c2 = sum(complex_unit(w2j))
-c3 = sum(complex_unit(w3j))
-c4 = sum(complex_unit(w4j))
+        #implement weight updating   
+        def model(complex_units, index, alpha):
+            weight_change = []
+            for xj, wij in zip(simple_units, complex_units):
+                weight_change.append(alpha * y_avg[index] * (xj-wij))
+            for delta_wij, wij in zip(weight_change, complex_units):
+                [delta_wij + wij for wij in complex_units]
 
-#get index of max element (corresponds to which unit is activated)
-sum_list = [c1, c2, c3, c4]
-max_sum = max(sum_list)
-max_index = sum_list.index(max_sum)
-
-#y is for every unit not every simple cell
-yt_prev = [1,1,1,1]
-yt = [1,1,1,1]
-y_avg = [1,1,1,1]
-
-#activate one of the complex units
-def unit_activation():
-    for i in range (4):
-        if i == max_index:
-            yt[i] = 1
-        else:
-            yt[i] = 0
-
-#compute y(t) 
-def y_bar(delta, yt_prev, y_avg, yt):
-    for i in range (4):
-        if yt_prev == []:
-            y_avg[i] = delta * yt[i]
-        else:
-            y_avg[i] = (1 - delta)*(yt_prev[i]) + (delta)*(yt[i])
-    yt_prev = y_avg
-
-#implement weight updating   
-def model(complex_units, index, alpha):
-    weight_change = []
-    for xj, wij in zip(simple_units, complex_units):
-        weight_change.append(alpha * y_avg[index] * (xj-wij))
-    for delta_wij, wij in zip(weight_change, complex_units):
-        [delta_wij + wij for wij in complex_units]
-
-
-def training():
-    #500 is just trials 
-    for i in range (100):
-        unit_activation()
-        y_bar(0.2, yt_prev, y_avg, yt)
-        model(w1j, 0, 0.02)
-        model(w2j, 1, 0.02)
-        model(w3j, 2, 0.02)
-        model(w4j, 3, 0.02)
-        synap_weights1.append(w1j[63])
-        
-inputs = []
-outputs = []
-traces = []
-synap_weights1 = []
-training()
+        def training():
+                unit_activation()
+                y_bar(0.2, yt_prev, y_avg, yt)
+                model(w1j, 0, 0.02)
+                model(w2j, 1, 0.02)
+                model(w3j, 2, 0.02)
+                model(w4j, 3, 0.02)
+                synap_weights1.append(w1j[63])
+                
+        inputs = []
+        outputs = []
+        traces = []
+        synap_weights1 = []
+        training()
 
 #prints x axis as 1-64, y-axis as weights 
 for i in range(len(simple_units)):
     plt.rc('grid', linestyle="-", color='black')
-    plt.scatter(unit, w1j, color=['red'])
-    plt.title("Simple Units vs. Weights(Complex Unit 1) at time 100")
-    plt.xlabel("Simple-Units")
-    plt.ylabel("Weights") 
-    plt.grid(True)
-plt.show()
-
-
-#prints x axis as 1-64, y-axis as weights 
-for i in range(len(simple_units)):
-    plt.rc('grid', linestyle="-", color='black')
-    plt.scatter(unit, w2j, color=['red'])
-    plt.title("Simple Units vs. Weights(Complex Unit 2) at time 100")
-    plt.xlabel("Simple-Units")
-    plt.ylabel("Weights") 
-    plt.grid(True)
-plt.show()
-
-
-#prints x axis as 1-64, y-axis as weights 
-for i in range(len(simple_units)):
-    plt.rc('grid', linestyle="-", color='black')
-    plt.scatter(unit, w3j, color=['red'])
-    plt.title("Simple Units vs. Weights(Complex Unit 3) at time 100")
-    plt.xlabel("Simple-Units")
-    plt.ylabel("Weights") 
-    plt.grid(True)
-plt.show()
-
-
-#prints x axis as 1-64, y-axis as weights 
-for i in range(len(simple_units)):
-    plt.rc('grid', linestyle="-", color='black')
-    plt.scatter(unit, w4j, color=['red'])
-    plt.title("Simple Units vs. Weights(Complex Unit 4) at time 100")
+    plt.scatter(unit, w1j, color=['red'], label='Class 1')
+    plt.scatter(unit, w2j, color=['blue'], label='Class 2')
+    plt.scatter(unit, w3j, color=['green'], label='Class 3')
+    plt.scatter(unit, w4j, color=['orange'], label='Class 4')
+    plt.legend()
+    plt.title("Simple Units vs. Weights at time 100")
     plt.xlabel("Simple-Units")
     plt.ylabel("Weights") 
     plt.grid(True)
@@ -351,18 +291,7 @@ for i in range(len(simple_units)):
 plt.show()
 
 
-
 # %%
-data2D1 = synap_weights1 
-data2D2 = synap_weights2
-data2D3 = synap_weights3
-data2D4 = synap_weights4 
-
-results = open("results.csv", "w")
-writer = csv.writer(results)
-
-for item in synap_weights1:
-    writer.writerow(synap_weights1)
 
 # %%
 #graph that shows all the changes and then pick like a random 5
