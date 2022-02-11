@@ -212,7 +212,7 @@ def unit_activation():
             yt[i] = 0
 
 #compute y(t) 
-def y_bar(delta):
+def y_bar(delta, yt_prev, y_avg, yt):
     for i in range (4):
         if yt_prev == []:
             y_avg[i] = delta * yt[i]
@@ -232,7 +232,7 @@ def training():
     #500 is just trials 
     for i in range (50):
         unit_activation()
-        y_bar(0.2)
+        y_bar(0.2, yt_prev, y_avg, yt)
         model(w1j, 0, 0.02)
         model(w2j, 1, 0.02)
         model(w3j, 2, 0.02)
