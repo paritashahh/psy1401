@@ -50,7 +50,6 @@ diagonal_sweep7 = np.flip(diagonal_sweep7)
 diagonal_sweep8 = diagonal_sweep4.copy()
 diagonal_sweep8 = np.flip(diagonal_sweep8)
 
-
 #vertical sweeps
 rLine = [1,1,1,1,1,1,1,1]
 rEmpty = [0,0,0,0,0,0,0,0]
@@ -92,12 +91,6 @@ w2j = np.random.uniform(0, 0.1, len(simple_units))
 w3j = np.random.uniform(0, 0.1, len(simple_units))
 w4j = np.random.uniform(0, 0.1, len(simple_units))
 
-#initialize list to keep track of weight_change per unit 
-delta_w1j = []
-delta_w2j = []
-delta_w3j = []
-delta_w4j = []
-
 unit_sum = []
 for i in range(len(simple_units)):
     unit_sum.append(0.2)
@@ -135,9 +128,9 @@ def unit_activation():
 def y_bar(delta):
     for i in range (4):
         if yt_prev == []:
-            y_avg[i] = delta * yt
+            y_avg[i] = delta * yt[i]
         else:
-            y_avg[i] = (1 - delta)*(yt_prev[i]) + (delta)*(yt)
+            y_avg[i] = (1 - delta)*(yt_prev[i]) + (delta)*(yt[i])
     yt_prev = y_avg
 
 #implement weight updating   
@@ -149,6 +142,7 @@ def model(complex_unit, index, alpha):
         complex_unit.append(delta_wij + wij)
 
 def training():
+    #500 is just trials 
     for i in range (500):
         unit_activation()
         y_bar(0.2)
@@ -156,7 +150,13 @@ def training():
         model(w2j, 1, 0.02)
         model(w3j, 2, 0.02)
         model(w4j, 3, 0.02)
-        i -= 1
     
 # %%
-
+#scatterplot of weight changes
+    #x should be trials, y should be the value of the weight
+    #make 4 classes aka each of the complex units 
+#scatterplots of inputs and outputs
+    #inputs are the data
+    #explain how this works 
+#y-traces--show at multiple time points the differences traces for the uints 
+    #over time it should be that the same complex unit
