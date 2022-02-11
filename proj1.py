@@ -84,30 +84,28 @@ for matrix in vertical_sweep2:
 #collapse matrix into array 
 #(now we can refer to each element aka simple unit individually)
 simple_units = np.asarray(matrix).flatten()
-
-#general constants!!
-#for actual implementation, 
-#let's add these as inputs to the computing function
-#so we can call the same function multiple times with different constants 
-#delta = 0.2
-#alpha = 0.02
-
+ 
 #initial weights for each simple cell-unit pair sampled from uniform distribution
 ##weights = #simple units
-w1j = np.ndarray.tolist(np.random.uniform(0, 0.1, (len(r0)*len(matrix))))
-w2j = np.ndarray.tolist(np.random.uniform(0, 0.1, (len(r0)*len(matrix))))
-w3j = np.ndarray.tolist(np.random.uniform(0, 0.1, (len(r0)*len(matrix))))
-w4j = np.ndarray.tolist(np.random.uniform(0, 0.1, (len(r0)*len(matrix))))
+w1j = np.random.uniform(0, 0.1, len(simple_units))
+w2j = np.random.uniform(0, 0.1, len(simple_units))
+w3j = np.random.uniform(0, 0.1, len(simple_units))
+w4j = np.random.uniform(0, 0.1, len(simple_units))
 
-#initialize list to keep track of weight_change
+#initialize list to keep track of weight_change per unit 
 delta_w1j = []
 delta_w2j = []
 delta_w3j = []
 delta_w4j = []
 
+unit_sum = []
+for i in range(len(simple_units)):
+    unit_sum.append(0.2)
+
 def complex_unit(wij): 
     for i in range(len(simple_units)):
-        return (simple_units[i] * wij[i])
+        unit_sum[i] = (simple_units[i] * wij[i])
+    return unit_sum
 
 #compute which complex unit will be activated
 c1 = sum(complex_unit(w1j))
