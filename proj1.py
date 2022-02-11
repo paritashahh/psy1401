@@ -221,12 +221,12 @@ def y_bar(delta, yt_prev, y_avg, yt):
     yt_prev = y_avg
 
 #implement weight updating   
-def model(complex_unit, index, alpha):
+def model(complex_units, index, alpha):
     weight_change = []
-    for xj, wij in zip(simple_units, complex_unit):
+    for xj, wij in zip(simple_units, complex_units):
         weight_change.append(alpha * y_avg(index) * (xj-wij))
-    for delta_wij, wij in zip(weight_change, complex_unit):
-        complex_unit.append(delta_wij + wij)
+    for delta_wij, wij in zip(weight_change, complex_units):
+        complex_units.append(delta_wij + wij)
 
 def training():
     #500 is just trials 
