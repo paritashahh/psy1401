@@ -173,10 +173,10 @@ simple_units = np.asarray(matrix).flatten()
  
 #initial weights for each simple cell-unit pair sampled from uniform distribution
 ##weights = #simple units
-w1j = np.random.uniform(0, 0.1, len(simple_units))
-w2j = np.random.uniform(0, 0.1, len(simple_units))
-w3j = np.random.uniform(0, 0.1, len(simple_units))
-w4j = np.random.uniform(0, 0.1, len(simple_units))
+w1j = np.random.uniform(0, 0.1, len(simple_units)).tolist()
+w2j = np.random.uniform(0, 0.1, len(simple_units)).tolist()
+w3j = np.random.uniform(0, 0.1, len(simple_units)).tolist()
+w4j = np.random.uniform(0, 0.1, len(simple_units)).tolist()
 
 unit_sum = []
 for i in range(len(simple_units)):
