@@ -224,7 +224,7 @@ def y_bar(delta, yt_prev, y_avg, yt):
 def model(complex_units, index, alpha):
     weight_change = []
     for xj, wij in zip(simple_units, complex_units):
-        weight_change.append(alpha * y_avg(index) * (xj-wij))
+        weight_change.append(alpha * y_avg[index] * (xj-wij))
     for delta_wij, wij in zip(weight_change, complex_units):
         complex_units.append(delta_wij + wij)
 
