@@ -12,6 +12,12 @@ r6 =[0,0,0,0,0,1,0,0]
 r7 =[0,0,0,0,0,0,1,0]
 r8 = [0,0,0,0,0,0,0,1]
 
+rLine = [1,1,1,1,1,1,1,1]
+rEmpty = [0,0,0,0,0,0,0,0]
+
+rA = [0,0,0,1,1,0,0,0]
+rB = [0,0,1,1,1,1,0,0]
+
 #from middle up right
 diagonal_sweep1 =[]
 
@@ -26,33 +32,59 @@ for row in matrix:
 diagonal_sweep2 = diagonal_sweep1.copy()
 diagonal_sweep2 = np.flip(diagonal_sweep2, axis=0)
 
-#from middle up left
+#from middle down right
 diagonal_sweep3 = diagonal_sweep1.copy()
 diagonal_sweep3 = np.flip(diagonal_sweep3, axis=1)
 
-#from up left down
+#from down right up
 diagonal_sweep4 = diagonal_sweep2.copy()
 diagonal_sweep4 = np.flip(diagonal_sweep4, axis=1)
 
-#from middle down left
+#from down left up
 diagonal_sweep5 = diagonal_sweep1.copy()
 diagonal_sweep5 = np.flip(diagonal_sweep5)
 
-#from down left up
+#from middle down left
 diagonal_sweep6 = diagonal_sweep2.copy()
 diagonal_sweep6 = np.flip(diagonal_sweep6)
 
-#from middle down right
+#from top left down
 diagonal_sweep7 = diagonal_sweep3.copy()
 diagonal_sweep7 = np.flip(diagonal_sweep7)
 
-#from down right up
+#from middle left up
 diagonal_sweep8 = diagonal_sweep4.copy()
 diagonal_sweep8 = np.flip(diagonal_sweep8)
 
+#full sweep from top right corner to bottom left
+TopRBottomL = []
+for matrix in diagonal_sweep2:
+    TopRBottomL.append(matrix)
+for matrix in diagonal_sweep6:
+    TopRBottomL.append(matrix)
+
+#full sweep from bottom right corner to top left
+BottomRTopL = []
+for matrix in diagonal_sweep4:
+    BottomRTopL.append(matrix)
+for matrix in diagonal_sweep8:
+    BottomRTopL.append(matrix)
+
+# full sweep top left to bottom right
+TopLBottomR = []
+for matrix in diagonal_sweep7:
+    BottomRTopL.append(matrix)
+for matrix in diagonal_sweep3:
+    BottomRTopL.append(matrix)
+
+# full sweep from bottom left corner to top right
+BottomLTopR = []
+for matrix in diagonal_sweep5:
+    BottomLTopR.append(matrix)
+for matrix in diagonal_sweep1:
+    BottomLTopR.append(matrix)
+
 #vertical sweeps
-rLine = [1,1,1,1,1,1,1,1]
-rEmpty = [0,0,0,0,0,0,0,0]
 
 #down to up
 vertical_sweep1 = []
@@ -78,6 +110,61 @@ for matrix in vertical_sweep2:
     matrix4 = matrix.T
     horisontal_sweep1.append(matrix4)
 
+#rotation
+rotation_1 =[]
+
+matrix = r1,r2,r3,r4,r5,r6,r7,r8
+first_matrix = np.asarray(matrix)
+matrix5 = np.asarray(matrix)
+rotation_1.append(first_matrix)
+i = 0
+while i< 4:
+    matrix5[:i+1] = matrix[1+i]
+    matrix5[7-i:] = matrix[6-i]
+    new_value = matrix5.copy()
+    rotation_1.append(new_value)
+    i += 1
+
+item6 = np.flip(rotation_1[2], axis=1)
+item7 = np.flip(rotation_1[1], axis=1)
+item8 = np.flip(rotation_1[0], axis = 1)
+
+rotation_1.append(item6)
+rotation_1.append(item7)
+rotation_1.append(item8)
+
+#scale change
+
+scale_change1 =[]
+matrix = rEmpty,rEmpty,rEmpty,rEmpty,rLine,rEmpty,rEmpty,rEmpty
+matrix = np.asarray(matrix)
+matrix6 = rEmpty,rEmpty,rEmpty,rLine,rLine,rEmpty,rEmpty,rEmpty
+matrix6 = np.asarray(matrix6)
+matrix7 = rEmpty,rEmpty,rLine,rLine,rLine,rEmpty,rEmpty,rEmpty
+matrix7 = np.asarray(matrix7)
+
+i = 0
+while i < 2:
+    scale_change1.append(matrix)
+    scale_change1.append(matrix6)
+    scale_change1.append(matrix7)
+    scale_change1.append(matrix6)
+    i += 1
+
+scale_change2 = []
+matrix = rEmpty,rEmpty,rEmpty,rEmpty,rA,rEmpty,rEmpty,rEmpty
+matrix = np.asarray(matrix)
+matrix8 = rEmpty,rEmpty,rEmpty,rB,rEmpty,rEmpty,rEmpty,rEmpty
+matrix8 = np.asarray(matrix8)
+matrix9 = rEmpty,rEmpty,rEmpty,rLine,rEmpty,rEmpty,rEmpty,rEmpty
+matrix9 = np.asarray(matrix9)
+i = 0
+while i < 2:
+    scale_change2.append(matrix)
+    scale_change2.append(matrix8)
+    scale_change2.append(matrix9)
+    scale_change2.append(matrix8)
+    i += 1
 #______________________________________________________
 
 #collapse matrix into array 
@@ -143,15 +230,48 @@ def model(complex_unit, index, alpha):
 
 def training():
     #500 is just trials 
-    for i in range (500):
+    for i in range (50):
         unit_activation()
         y_bar(0.2)
         model(w1j, 0, 0.02)
         model(w2j, 1, 0.02)
         model(w3j, 2, 0.02)
         model(w4j, 3, 0.02)
+        synap_weights1.append(w1j)
+        synap_weights2.append(w2j)
+        synap_weights3.append(w3j)
+        synap_weights4.append(w4j)
+
+inputs = []
+outputs = []
+traces = []
+synap_weights1 = []
+synap_weights2 = []
+synap_weights3 = []
+synap_weights4 = []
+
+import numpy as np
+from matplotlib import pyplot as plt
+plt.rcParams["figure.figsize"] = [7.50, 3.50]
+plt.rcParams["figure.autolayout"] = True
+data2D1 = synap_weights1 
+data2D2 = synap_weights2
+data2D3 = synap_weights3
+data2D4 = synap_weights4 
+im = plt.imshow(data2D, cmap="copper_r")
+plt.colorbar(im)
+plt.show()
+
+import matplotlib.pyplot as plt
+
+plt.rc('grid', linestyle="-", color='black')
+plt.scatter(y_avg[0], y_avg[1], y_avg[2], y_avg[3], color=['red', 'green', 'blue', 'pink'])
+plt.grid(True)
+
+plt.show()
     
 # %%
+#graph that shows all the changes and then pick like a random 5
 #scatterplot of weight changes
     #x should be trials, y should be the value of the weight
     #make 4 classes aka each of the complex units 
