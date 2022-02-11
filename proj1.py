@@ -1,6 +1,7 @@
-# %% 
+# %%
 import numpy as np
-
+import csv
+import matplotlib.pyplot as plt
 #diagonal sweeps
 r0 = [0,0,0,0,0,0,0,0]
 r1 = [1,0,0,0,0,0,0,0]
@@ -178,6 +179,55 @@ w2j = np.random.uniform(0, 0.1, len(simple_units)).tolist()
 w3j = np.random.uniform(0, 0.1, len(simple_units)).tolist()
 w4j = np.random.uniform(0, 0.1, len(simple_units)).tolist()
 
+#define units 
+unit = []
+for i in range(64):
+    unit.append(i)
+
+#prints x axis as 1-64, y-axis as weights 
+for i in range(len(simple_units)):
+    plt.rc('grid', linestyle="-", color='black')
+    plt.scatter(unit, w1j, color=['red'])
+    plt.title("Simple Units vs. Weights(Complex Unit 1) at time 0")
+    plt.xlabel("Simple-Units")
+    plt.ylabel("Weights") 
+    plt.grid(True)
+plt.show()
+
+
+#prints x axis as 1-64, y-axis as weights 
+for i in range(len(simple_units)):
+    plt.rc('grid', linestyle="-", color='black')
+    plt.scatter(unit, w2j, color=['red'])
+    plt.title("Simple Units vs. Weights(Complex Unit 2) at time 0")
+    plt.xlabel("Simple-Units")
+    plt.ylabel("Weights") 
+    plt.grid(True)
+plt.show()
+
+
+#prints x axis as 1-64, y-axis as weights 
+for i in range(len(simple_units)):
+    plt.rc('grid', linestyle="-", color='black')
+    plt.scatter(unit, w3j, color=['red'])
+    plt.title("Simple Units vs. Weights(Complex Unit 3) at time 0")
+    plt.xlabel("Simple-Units")
+    plt.ylabel("Weights") 
+    plt.grid(True)
+plt.show()
+
+
+#prints x axis as 1-64, y-axis as weights 
+for i in range(len(simple_units)):
+    plt.rc('grid', linestyle="-", color='black')
+    plt.scatter(unit, w4j, color=['red'])
+    plt.title("Simple Units vs. Weights(Complex Unit 4) at time 0")
+    plt.xlabel("Simple-Units")
+    plt.ylabel("Weights") 
+    plt.grid(True)
+plt.show()
+
+
 unit_sum = []
 for i in range(len(simple_units)):
     unit_sum.append(0.2)
@@ -199,9 +249,9 @@ max_sum = max(sum_list)
 max_index = sum_list.index(max_sum)
 
 #y is for every unit not every simple cell
-yt_prev = [1, 1, 1, 1]
-yt = [1, 1, 1, 1]
-y_avg = [1, 1, 1, 1]
+yt_prev = [1,1,1,1]
+yt = [1,1,1,1]
+y_avg = [1,1,1,1]
 
 #activate one of the complex units
 def unit_activation():
@@ -226,38 +276,94 @@ def model(complex_units, index, alpha):
     for xj, wij in zip(simple_units, complex_units):
         weight_change.append(alpha * y_avg[index] * (xj-wij))
     for delta_wij, wij in zip(weight_change, complex_units):
-        complex_units.append(delta_wij + wij)
+        [delta_wij + wij for wij in complex_units]
+
 
 def training():
     #500 is just trials 
-    for i in range (50):
+    for i in range (100):
         unit_activation()
         y_bar(0.2, yt_prev, y_avg, yt)
         model(w1j, 0, 0.02)
         model(w2j, 1, 0.02)
         model(w3j, 2, 0.02)
         model(w4j, 3, 0.02)
-        synap_weights1.append(w1j)
-        synap_weights2.append(w2j)
-        synap_weights3.append(w3j)
-        synap_weights4.append(w4j)
-
+        synap_weights1.append(w1j[63])
+        
 inputs = []
 outputs = []
 traces = []
 synap_weights1 = []
-synap_weights2 = []
-synap_weights3 = []
-synap_weights4 = []
+training()
 
-import matplotlib.pyplot as plt
-
-plt.rc('grid', linestyle="-", color='black')
-plt.scatter(y_avg[0], y_avg[1], y_avg[2], y_avg[3], color=['red', 'green', 'blue', 'pink'])
-plt.grid(True)
-
+#prints x axis as 1-64, y-axis as weights 
+for i in range(len(simple_units)):
+    plt.rc('grid', linestyle="-", color='black')
+    plt.scatter(unit, w1j, color=['red'])
+    plt.title("Simple Units vs. Weights(Complex Unit 1) at time 100")
+    plt.xlabel("Simple-Units")
+    plt.ylabel("Weights") 
+    plt.grid(True)
 plt.show()
-    
+
+
+#prints x axis as 1-64, y-axis as weights 
+for i in range(len(simple_units)):
+    plt.rc('grid', linestyle="-", color='black')
+    plt.scatter(unit, w2j, color=['red'])
+    plt.title("Simple Units vs. Weights(Complex Unit 2) at time 100")
+    plt.xlabel("Simple-Units")
+    plt.ylabel("Weights") 
+    plt.grid(True)
+plt.show()
+
+
+#prints x axis as 1-64, y-axis as weights 
+for i in range(len(simple_units)):
+    plt.rc('grid', linestyle="-", color='black')
+    plt.scatter(unit, w3j, color=['red'])
+    plt.title("Simple Units vs. Weights(Complex Unit 3) at time 100")
+    plt.xlabel("Simple-Units")
+    plt.ylabel("Weights") 
+    plt.grid(True)
+plt.show()
+
+
+#prints x axis as 1-64, y-axis as weights 
+for i in range(len(simple_units)):
+    plt.rc('grid', linestyle="-", color='black')
+    plt.scatter(unit, w4j, color=['red'])
+    plt.title("Simple Units vs. Weights(Complex Unit 4) at time 100")
+    plt.xlabel("Simple-Units")
+    plt.ylabel("Weights") 
+    plt.grid(True)
+plt.show()
+
+
+#track weights for one simple cell (bottom-most right) over time
+for i in range(len(simple_units)):
+    plt.rc('grid', linestyle="-", color='black')
+    plt.scatter(unit, synap_weights1, color=['black'])
+    plt.title("Weights over Time")
+    plt.xlabel("Simple-Unit #64")
+    plt.ylabel("Weights") 
+    plt.grid(True)
+plt.show()
+
+
+
+# %%
+data2D1 = synap_weights1 
+data2D2 = synap_weights2
+data2D3 = synap_weights3
+data2D4 = synap_weights4 
+
+results = open("results.csv", "w")
+writer = csv.writer(results)
+
+for item in synap_weights1:
+    writer.writerow(synap_weights1)
+
 # %%
 #graph that shows all the changes and then pick like a random 5
 #scatterplot of weight changes
